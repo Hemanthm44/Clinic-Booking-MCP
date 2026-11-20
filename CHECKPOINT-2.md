@@ -39,7 +39,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 ## Subtasks
 
 ### Milestone 1: Draw the Map
-- [ ] 1.1 ARCHITECTURE.md committed
+- [x] 1.1 ARCHITECTURE.md committed
 - [ ] 1.2 Admin user time zone set to Europe/London
 - [ ] 1.3 Metadata: `Clinic_Doctor__c` and `Clinic_Leave__c`
 - [ ] 1.4 Metadata: `Clinic_Patient__c` and `Clinic_Appointment__c` (unique keys)
