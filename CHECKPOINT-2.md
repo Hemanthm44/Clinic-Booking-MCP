@@ -46,8 +46,8 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 1.5 Metadata: tabs, `Clinic_Demo_Admin` and `Clinic_Demo_Integration` permission sets, `package.xml`
 - [x] 1.6 Dry-run, deploy, assign `Clinic_Demo_Admin` to the admin; hospital counts unchanged
 - [x] 1.7 `reset.apex`: wipe `Clinic_*` and seed the demo story relative to today
-- [ ] 1.8 Run reset twice; seeded counts correct; hospital counts unchanged; unique-key duplicate test as admin
-- [ ] 1.9 Flag captured; checkpoint updated
+- [x] 1.8 Run reset twice; seeded counts correct; hospital counts unchanged; unique-key duplicate test as admin
+- [x] 1.9 Flag captured; checkpoint updated
 
 ### Milestone 2: Key to the Vault
 - [ ] 2.1 Platform-licence user `mcp-clinic@orgfarm-e8c2b27448.demo` with `Clinic_Demo_Integration`
@@ -128,3 +128,11 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - **2026-11-20:** Plan agreed; repo, Cloud Run service and clinic service account created; CD connected; phase 0 live;
   hospital baseline recorded; licences checked. **Milestone 0 captured.** Architecture designed (4 `Clinic_*` objects,
   computed availability, unique-key write safety, Apex reset); subtasks written.
+
+  - **Slot key format is a contract:** `<18-char Salesforce ID>|yyyy-MM-ddTHH:mmZ` (UTC, no seconds), e.g.
+  `a0BjV00000ABCDeUAP|2026-11-23T09:00Z`. reset.apex and the MCP server must build it identically, or the
+  double-booking guard silently stops working.
+- Anonymous Apex runs with the running user's object and field permissions: the admin needs `Clinic_Demo_Admin`.
+- Required fields can't be listed in permission sets (they're always accessible with object access).
+- Debug logs show `|` as `&#124;` (cosmetic). Read script results with `| grep`.
+- Seeded dates move with "today": re-run the reset on demo day, and before each dry run.
