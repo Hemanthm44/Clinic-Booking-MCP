@@ -45,7 +45,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 1.4 Metadata: `Clinic_Patient__c` and `Clinic_Appointment__c` (unique keys)
 - [x] 1.5 Metadata: tabs, `Clinic_Demo_Admin` and `Clinic_Demo_Integration` permission sets, `package.xml`
 - [x] 1.6 Dry-run, deploy, assign `Clinic_Demo_Admin` to the admin; hospital counts unchanged
-- [ ] 1.7 `reset.apex`: wipe `Clinic_*` and seed the demo story relative to today
+- [x] 1.7 `reset.apex`: wipe `Clinic_*` and seed the demo story relative to today
 - [ ] 1.8 Run reset twice; seeded counts correct; hospital counts unchanged; unique-key duplicate test as admin
 - [ ] 1.9 Flag captured; checkpoint updated
 
