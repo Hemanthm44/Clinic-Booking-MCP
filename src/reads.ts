@@ -1,6 +1,7 @@
 import { CLINIC, WEEKDAYS, type PartOfDay } from "./clinic.js";
 import { freeSlots, isOnLeave, windowEnd, type Doctor, type Leave, type Slot } from "./availability.js";
-import { loadBookedKeys, loadDoctors, loadLeaves } from "./data.js";
+import { findPatientByKey, loadBookedKeys, loadDoctors, loadLeaves, loadUpcomingAppointments, type AppointmentRow } from "./data.js";
+import { normalisePhone, parseDob, patientKey } from "./validate.js";
 import { ToolError } from "./result.js";
 import { now, parseUkDate, spoken, spokenDate, spokenTime, toUkLocalIso, ukToday, weekdayShort } from "./time.js";
 
@@ -175,5 +176,48 @@ export async function findAvailableSlots(args: SlotArgs): Promise<Record<string,
     more_available: next.length - shown.length,
     searched,
     alternatives: true,
+  };
+}
+
+export function identityKey(phone: string, dateOfBirth: string): string {
+  const normalised = normalisePhone(phone ?? "");
+  if (!normalised) {
+    throw new ToolError("INVALID_INPUT", "Sorry, I didn't catch that phone number. Could you say it again?", { field: "phone" });
+  }
+  const dob = parseDob(dateOfBirth ?? "", now());
+  if (!dob) {
+    throw new ToolError("INVALID_INPUT", "Sorry, I didn't catch your date of birth. Could you say it again?", { field: "date_of_birth", expected: "YYYY-MM-DD" });
+  }
+  return patientKey(normalised, dob);
+}
+
+export function appointmentView(a: AppointmentRow) {
+  return {
+    appointment_id: a.id,
+    reference: a.reference,
+    doctor_id: a.doctorId,
+    doctor_name: a.doctorName,
+    start: toUkLocalIso(a.start),
+    spoken: spoken(a.start),
+    reason: a.reason,
+  };
+}
+
+export async function findMyAppointments(args: { phone: string; date_of_birth: string }): Promise<Record<string, unknown>> {
+  const key = identityKey(args.phone, args.date_of_birth);
+  const patient = await findPatientByKey(key);
+  if (!patient) {
+    throw new ToolError("NOT_FOUND", "I couldn't find any appointments under that phone number and date of birth. Could you check the details?");
+  }
+  const appointments = await loadUpcomingAppointments(patient.id, now());
+  if (!appointments.length) {
+    return { summary: `I have ${patient.name} on file, but there are no upcoming appointments.`, patient_name: patient.name, appointments: [] };
+  }
+  const count = appointments.length === 1 ? "one upcoming appointment" : `${appointments.length} upcoming appointments`;
+  const list = joinWith(appointments.map((a) => `${spoken(a.start)} with ${a.doctorName}`), "and");
+  return {
+    summary: `I have ${patient.name} on file, with ${count}: ${list}.`,
+    patient_name: patient.name,
+    appointments: appointments.map(appointmentView),
   };
 }

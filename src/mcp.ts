@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { run } from "./result.js";
-import { findAvailableSlots, getClinicInfo } from "./reads.js";
+import { findAvailableSlots, findMyAppointments, getClinicInfo } from "./reads.js";
 
 export function buildMcpServer(): McpServer {
   const server = new McpServer({ name: "clinic-booking-mcp", version: "0.3.0" });
@@ -40,6 +40,21 @@ export function buildMcpServer(): McpServer {
     },
     async (args) => run(() => findAvailableSlots(args)),
   );
-
+  server.registerTool(
+    "find_my_appointments",
+    {
+      title: "Find my appointments",
+      description:
+        "Look up a caller's upcoming appointments by phone number and date of birth, which together are their identity. " +
+        "Use this before rescheduling or cancelling; it returns the appointment_id those tools need. " +
+        "Confirm patient_name with the caller before changing anything.",
+      inputSchema: {
+        phone: z.string().describe("UK phone number as the caller said it, in any format."),
+        date_of_birth: z.string().describe("Caller's date of birth as YYYY-MM-DD."),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async (args) => run(() => findMyAppointments(args)),
+  );
   return server;
 }
