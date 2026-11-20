@@ -29,8 +29,8 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 | 0 | Basecamp | Cloud Run URL returns phase 0; push to `main` redeploys; hospital baseline saved | Hemanth | ✅ 2026-11-20 |
 | 1 | Draw the Map | Clinic objects deployed; reset seeds the demo story; hospital counts unchanged after two resets | Hemanth | ✅ 2026-11-20 |
 | 2 | Key to the Vault | Token as the clinic user; test booking created; duplicate slot fails `DUPLICATE_VALUE`; hospital `list_objects` unchanged | Hemanth | ✅ 2026-11-20 |
-| 3 | Read the Calendar | Inspector locally: slots exclude booked, leave, past, out-of-hours; unit tests pass | Hemanth | 🔄 Next |
-| 4 | Claim the Slot | Parallel bookings of one slot give one booking; repeat booking returns `already_booked` | Hemanth | ⬜ |
+| 3 | Read the Calendar | Inspector locally: slots exclude booked, leave, past, out-of-hours; unit tests pass | Hemanth | ✅ 2026-11-20 |
+| 4 | Claim the Slot | Parallel bookings of one slot give one booking; repeat booking returns `already_booked` | Hemanth | 🔄 Next |
 | 5 | Move and Release | Reschedule onto a taken slot keeps the original; cancelled slot reappears; wrong phone + DOB refused | Hemanth | ⬜ |
 | 6 | Into the Cloud | Auth before secrets; 3–5 pass through Cloud Run with the key; 401 without; every call logged | Hemanth | ⬜ |
 | 7 | Pass the Baton | Bridge runs find → confirm → reschedule → cancel by text, no help | Teammate | ⬜ |
@@ -65,7 +65,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 3.4 MCP skeleton on stateless `/mcp`; `get_clinic_info`
 - [x] 3.5 `find_available_slots`
 - [x] 3.6 `find_my_appointments`
-- [ ] 3.7 Inspector flag tests
+- [x] 3.7 Inspector flag tests
 
 ### Milestone 4: Claim the Slot
 - [ ] 4.1 `confirm_booking` happy path (patient upsert, appointment create)
@@ -178,4 +178,4 @@ Scripts: `reset.apex` (wipe + seed), `double-booking-test.apex` (guard test, rol
   `mcp-clinic`. As the clinic user via REST: doctors readable; `Patient__c` → INVALID_TYPE; patient upsert 201 then 200;
   booking 201; duplicate → DUPLICATE_VALUE; cancel 204 with keys blanked. Hospital MCP `list_objects` unchanged.
   Decided to share `mcp-api-key` with the hospital MCP; clinic service account granted access. Local `.env` created.
-  **Milestone 2 captured.**
+  **Milestone 2 captured.**- **2026-11-20 (late):** Milestone 3 built: Salesforce client (8 s timeout, one retry, shared token refresh), clinic rules, UK time helpers, validation, availability engine with slotProblem (24 unit tests). MCP server with get_clinic_info, find_available_slots (reasons + forward search), find_my_appointments (phone + DOB identity). Extra files: src/result.ts, src/data.ts, src/reads.ts, scripts/mcp-call.sh, scripts/smoke.ts. Inspector lists 3 tools and runs them. Gotcha: a paste can silently truncate a file; check with `tail -n 3` after pasting. **Milestone 3 captured.**
