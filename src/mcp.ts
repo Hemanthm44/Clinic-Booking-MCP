@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { run } from "./result.js";
+import { confirmBooking } from "./booking.js";
 import { findAvailableSlots, findMyAppointments, getClinicInfo } from "./reads.js";
 
 export function buildMcpServer(): McpServer {
@@ -55,6 +56,27 @@ export function buildMcpServer(): McpServer {
       annotations: { readOnlyHint: true },
     },
     async (args) => run(() => findMyAppointments(args)),
+  );
+    server.registerTool(
+    "confirm_booking",
+    {
+      title: "Confirm booking",
+      description:
+        "Book an appointment. Only call this after reading the details back to the caller (doctor, day and time, and their name) " +
+        "and hearing a clear yes. Use doctor_id and start from a slot returned by find_available_slots. Creates the patient from " +
+        "name, phone and date of birth if they are new. Safe to retry: repeating the same booking returns the existing appointment " +
+        "with already_booked: true. On SLOT_TAKEN or SLOT_INVALID, offer the alternatives returned with the error.",
+      inputSchema: {
+        doctor: z.string().describe("doctor_id from the chosen slot (preferred), or the doctor's name."),
+        start: z.string().describe("Slot start in UK time as YYYY-MM-DDTHH:mm, exactly as returned by find_available_slots."),
+        patient_name: z.string().describe("Caller's full name."),
+        phone: z.string().describe("Caller's UK phone number, in any format."),
+        date_of_birth: z.string().describe("Caller's date of birth as YYYY-MM-DD."),
+        reason: z.string().optional().describe("Optional short reason for the visit, in the caller's words."),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    },
+    async (args) => run(() => confirmBooking(args)),
   );
   return server;
 }

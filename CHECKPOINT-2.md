@@ -68,8 +68,8 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 3.7 Inspector flag tests
 
 ### Milestone 4: Claim the Slot
-- [ ] 4.1 `confirm_booking` happy path (patient upsert, appointment create)
-- [ ] 4.2 Duplicate handling: `already_booked`, `SLOT_TAKEN` + alternatives, `PATIENT_CONFLICT`
+- [x] 4.1 `confirm_booking` happy path (patient upsert, appointment create)
+- [x] 4.2 Duplicate handling: `already_booked`, `SLOT_TAKEN` + alternatives, `PATIENT_CONFLICT`
 - [ ] 4.3 Parallel booking test (two calls at once)
 - [ ] 4.4 Flag captured
 

@@ -67,10 +67,10 @@ export interface AppointmentRow {
   reason: string | null;
 }
 
-const APPOINTMENT_FIELDS =
+export const APPOINTMENT_FIELDS =
   "Id, Name, Doctor__c, Doctor__r.Name, Patient__c, Patient__r.Patient_Key__c, Start_Time__c, Status__c, Reason__c";
 
-function toAppointment(r: any): AppointmentRow {
+export function toAppointment(r: any): AppointmentRow {
   return {
     id: r.Id,
     reference: r.Name,
