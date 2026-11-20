@@ -1,0 +1,27 @@
+== Account
+
+[1mTotal number of records retrieved: 1.[22m
+== Doctor__c
+
+[1mTotal number of records retrieved: 2.[22m
+== Condition__c
+
+[1mTotal number of records retrieved: 3.[22m
+== Treatment__c
+
+[1mTotal number of records retrieved: 4.[22m
+== Patient__c
+
+[1mTotal number of records retrieved: 3.[22m
+== Visit__c
+
+[1mTotal number of records retrieved: 3.[22m
+== Lab_Result__c
+
+[1mTotal number of records retrieved: 7.[22m
+== Patient_Treatment__c
+
+[1mTotal number of records retrieved: 4.[22m
+== Case
+
+[1mTotal number of records retrieved: 1.[22m
