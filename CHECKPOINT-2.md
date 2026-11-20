@@ -62,7 +62,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 3.1 Dependencies (`luxon`); Salesforce client ported from the hospital repo with GET/POST/PATCH, 8 s timeout, one retry
 - [x] 3.2 `clinic.ts`, `time.ts`, `validate.ts` + unit tests (phone formats, DOB, UK ↔ UTC, clock change)
 - [x] 3.3 `availability.ts` + unit tests (leave, lunch, weekends, past, booked, forward search) using `CLOCK_OVERRIDE`
-- [ ] 3.4 MCP skeleton on stateless `/mcp`; `get_clinic_info`
+- [x] 3.4 MCP skeleton on stateless `/mcp`; `get_clinic_info`
 - [ ] 3.5 `find_available_slots`
 - [ ] 3.6 `find_my_appointments`
 - [ ] 3.7 Inspector flag tests
