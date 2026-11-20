@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Clinic_Appointment__c</members>
+        <members>Clinic_Doctor__c</members>
+        <members>Clinic_Leave__c</members>
+        <members>Clinic_Patient__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Clinic_Appointment__c</members>
+        <members>Clinic_Doctor__c</members>
+        <members>Clinic_Leave__c</members>
+        <members>Clinic_Patient__c</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>Clinic_Demo_Admin</members>
+        <members>Clinic_Demo_Integration</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>68.0</version>
+</Package>
