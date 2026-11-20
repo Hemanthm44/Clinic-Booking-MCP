@@ -59,7 +59,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 2.6 Local `.env` (gitignored, chmod 600) with the clinic credentials
 
 ### Milestone 3: Read the Calendar
-- [ ] 3.1 Dependencies (`luxon`); Salesforce client ported from the hospital repo with GET/POST/PATCH, 8 s timeout, one retry
+- [x] 3.1 Dependencies (`luxon`); Salesforce client ported from the hospital repo with GET/POST/PATCH, 8 s timeout, one retry
 - [ ] 3.2 `clinic.ts`, `time.ts`, `validate.ts` + unit tests (phone formats, DOB, UK ↔ UTC, clock change)
 - [ ] 3.3 `availability.ts` + unit tests (leave, lunch, weekends, past, booked, forward search) using `CLOCK_OVERRIDE`
 - [ ] 3.4 MCP skeleton on stateless `/mcp`; `get_clinic_info`
