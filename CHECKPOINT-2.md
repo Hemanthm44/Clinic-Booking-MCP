@@ -79,9 +79,9 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [ ] 5.3 Ownership, past and repeat tests; flag captured
 
 ### Milestone 6: Into the Cloud
-- [ ] 6.1 Bearer auth on `/mcp` deployed first (`GET /` shows phase 6)
-- [ ] 6.2 Secrets `clinic-sf-client-id`, `clinic-sf-client-secret` granted only to the clinic service account; **shared** `mcp-api-key` (clinic service account access granted early, 2026-11-20)
-- [ ] 6.3 Cloud Run: secrets + `SF_INSTANCE_URL`, timeout 300 s (min instances 1 only for demo days)
+- [x] 6.1 Bearer auth on `/mcp` deployed first (`GET /` shows phase 6)
+- [x] 6.2 Secrets `clinic-sf-client-id`, `clinic-sf-client-secret` granted only to the clinic service account; **shared** `mcp-api-key` (clinic service account access granted early, 2026-11-20)
+- [x] 6.3 Cloud Run: secrets + `SF_INSTANCE_URL`, timeout 300 s (min instances 1 only for demo days)
 - [ ] 6.4 One log line per tool call; `GET /ready` (with key)
 - [ ] 6.5 Milestone 3–5 tests through Cloud Run; 401 without the key
 
@@ -180,3 +180,4 @@ Scripts: `reset.apex` (wipe + seed), `double-booking-test.apex` (guard test, rol
   Decided to share `mcp-api-key` with the hospital MCP; clinic service account granted access. Local `.env` created.
   **Milestone 2 captured.**- **2026-11-20 (late):** Milestone 3 built: Salesforce client (8 s timeout, one retry, shared token refresh), clinic rules, UK time helpers, validation, availability engine with slotProblem (24 unit tests). MCP server with get_clinic_info, find_available_slots (reasons + forward search), find_my_appointments (phone + DOB identity). Extra files: src/result.ts, src/data.ts, src/reads.ts, scripts/mcp-call.sh, scripts/smoke.ts. Inspector lists 3 tools and runs them. Gotcha: a paste can silently truncate a file; check with `tail -n 3` after pasting. **Milestone 3 captured.**
 - **2026-11-20 (late):** confirm_booking: validation, slotProblem with spoken reasons + alternatives, patient upsert, create with both slot keys; on DUPLICATE_VALUE looks up the key holders (already_booked / SLOT_TAKEN / PATIENT_CONFLICT). Tested: book, repeat (same reference), other caller, second doctor same time, lunch, leave. scripts/race-test.sh: 5, 5 and 8 parallel callers on one slot each gave exactly one booking. Rejected inserts consume auto-numbers (references skip). mcp-call.sh now prints NO RESPONSE when the server is down. **Milestone 4 captured.**
+- **2026-11-20 (night):** 6.1-6.3: bearer auth on /mcp (constant-time compare; 503 if no key) deployed first, phase 6 confirmed. Cloud Run given shared mcp-api-key, timeout 300 s. Secrets clinic-sf-client-id and clinic-sf-client-secret created, readable only by the clinic service account, mounted with SF_INSTANCE_URL (revision 00028). get_clinic_info returns live data through Cloud Run with the key; 401 without. Local .env has its own MCP_API_KEY (export MCP_KEY from it for mcp-call.sh). Gotcha: a Cloud Run update that references a missing secret fails and the old revision keeps serving.
