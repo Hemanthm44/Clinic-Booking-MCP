@@ -50,7 +50,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 1.9 Flag captured; checkpoint updated
 
 ### Milestone 2: Key to the Vault
-- [ ] 2.1 Platform-licence user `mcp-clinic@orgfarm-e8c2b27448.demo` with `Clinic_Demo_Integration`
+- [x] 2.1 Platform-licence user `mcp-clinic@orgfarm-e8c2b27448.demo` with `Clinic_Demo_Integration`
 - [ ] 2.2 External Client App "MCP Clinic Booking": OAuth, `api` scope, Client Credentials, Run As the clinic user
 - [ ] 2.3 Token via curl (secret read with `read -s`)
 - [ ] 2.4 curl: create a booking (201), same slot again (`DUPLICATE_VALUE`), cancel by PATCH (keys blanked)
