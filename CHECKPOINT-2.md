@@ -19,6 +19,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - Confirmation by agent read-back, then `confirm_booking`. No `hold_slot` (production only). No cancellation cutoff.
 - Retries are safe: every write is guarded by a unique key or is a no-op when repeated.
 - Reset and seed: one transactional Apex script, dates relative to today.
+- **MCP key shared with the hospital MCP** (`mcp-api-key`).
 - Tools: `get_clinic_info`, `find_available_slots`, `confirm_booking`, `find_my_appointments`,
   `reschedule_appointment`, `cancel_appointment`.
 
@@ -26,9 +27,9 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 | # | Milestone | Flag (done when…) | Owner | Status |
 |---|---|---|---|---|
 | 0 | Basecamp | Cloud Run URL returns phase 0; push to `main` redeploys; hospital baseline saved | Hemanth | ✅ 2026-11-20 |
-| 1 | Draw the Map | Clinic objects deployed; reset seeds the demo story; hospital counts unchanged after two resets | Hemanth | 🔄 Now |
-| 2 | Key to the Vault | Token as the clinic user; test booking created; duplicate slot fails `DUPLICATE_VALUE`; hospital `list_objects` unchanged | Hemanth | ⬜ |
-| 3 | Read the Calendar | Inspector locally: slots exclude booked, leave, past, out-of-hours; unit tests pass | Hemanth | ⬜ |
+| 1 | Draw the Map | Clinic objects deployed; reset seeds the demo story; hospital counts unchanged after two resets | Hemanth | ✅ 2026-11-20 |
+| 2 | Key to the Vault | Token as the clinic user; test booking created; duplicate slot fails `DUPLICATE_VALUE`; hospital `list_objects` unchanged | Hemanth | ✅ 2026-11-20 |
+| 3 | Read the Calendar | Inspector locally: slots exclude booked, leave, past, out-of-hours; unit tests pass | Hemanth | 🔄 Next |
 | 4 | Claim the Slot | Parallel bookings of one slot give one booking; repeat booking returns `already_booked` | Hemanth | ⬜ |
 | 5 | Move and Release | Reschedule onto a taken slot keeps the original; cancelled slot reappears; wrong phone + DOB refused | Hemanth | ⬜ |
 | 6 | Into the Cloud | Auth before secrets; 3–5 pass through Cloud Run with the key; 401 without; every call logged | Hemanth | ⬜ |
@@ -38,7 +39,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 
 ## Subtasks
 
-### Milestone 1: Draw the Map
+### Milestone 1: Draw the Map ✅
 - [x] 1.1 ARCHITECTURE.md committed
 - [x] 1.2 Admin user time zone set to Europe/London
 - [x] 1.3 Metadata: `Clinic_Doctor__c` and `Clinic_Leave__c`
@@ -49,13 +50,13 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 1.8 Run reset twice; seeded counts correct; hospital counts unchanged; unique-key duplicate test as admin
 - [x] 1.9 Flag captured; checkpoint updated
 
-### Milestone 2: Key to the Vault
-- [x] 2.1 Platform-licence user `mcp-clinic@orgfarm-e8c2b27448.demo` with `Clinic_Demo_Integration`
-- [ ] 2.2 External Client App "MCP Clinic Booking": OAuth, `api` scope, Client Credentials, Run As the clinic user
-- [ ] 2.3 Token via curl (secret read with `read -s`)
-- [ ] 2.4 curl: create a booking (201), same slot again (`DUPLICATE_VALUE`), cancel by PATCH (keys blanked)
-- [ ] 2.5 Hospital MCP `list_objects` unchanged
-- [ ] 2.6 Local `.env` (gitignored, chmod 600) with the clinic credentials
+### Milestone 2: Key to the Vault ✅
+- [x] 2.1 Integration user `mcp-clinic@orgfarm-e8c2b27448.demo` (Salesforce licence, Minimum Access - Salesforce profile) with `Clinic_Demo_Integration`
+- [x] 2.2 External Client App "MCP Clinic Booking": OAuth, `api` scope, Client Credentials, Run As the clinic user
+- [x] 2.3 Token via curl (secret read with `read -s`)
+- [x] 2.4 curl: create a booking (201), same slot again (`DUPLICATE_VALUE`), cancel by PATCH (keys blanked)
+- [x] 2.5 Hospital MCP `list_objects` unchanged
+- [x] 2.6 Local `.env` (gitignored, chmod 600) with the clinic credentials
 
 ### Milestone 3: Read the Calendar
 - [ ] 3.1 Dependencies (`luxon`); Salesforce client ported from the hospital repo with GET/POST/PATCH, 8 s timeout, one retry
@@ -79,14 +80,14 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 
 ### Milestone 6: Into the Cloud
 - [ ] 6.1 Bearer auth on `/mcp` deployed first (`GET /` shows phase 6)
-- [ ] 6.2 Secrets `clinic-sf-client-id`, `clinic-sf-client-secret`, `clinic-mcp-api-key`, granted only to the clinic service account
+- [ ] 6.2 Secrets `clinic-sf-client-id`, `clinic-sf-client-secret` granted only to the clinic service account; **shared** `mcp-api-key` (clinic service account access granted early, 2026-11-20)
 - [ ] 6.3 Cloud Run: secrets + `SF_INSTANCE_URL`, timeout 300 s (min instances 1 only for demo days)
 - [ ] 6.4 One log line per tool call; `GET /ready` (with key)
 - [ ] 6.5 Milestone 3–5 tests through Cloud Run; 401 without the key
 
 ### Milestone 7: Pass the Baton
 - [ ] 7.1 HANDOFF.md: endpoint, auth, tool contracts, errors, agent prompt guidance, demo script
-- [ ] 7.2 Teammate gets access to `clinic-mcp-api-key`
+- [ ] 7.2 Teammate confirms they have the shared MCP key (same key as the hospital MCP)
 - [ ] 7.3 Bridge text test passes (teammate)
 
 ### Milestone 8: Give It a Voice (teammate)
@@ -105,11 +106,30 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - **GCP:** `heymello-production` (441317184491), **shared company project with live services**.
   Cloud Run `clinic-booking-mcp`, europe-west1, labels `app=clinic-booking-mcp,env=demo`, min 0, max 2, public.
   URL https://clinic-booking-mcp-441317184491.europe-west1.run.app.
-  Service account `clinic-booking-mcp@heymello-production.iam.gserviceaccount.com`. CD on push to `main`.
+  Service account `clinic-booking-mcp@heymello-production.iam.gserviceaccount.com` (has secretAccessor on `mcp-api-key` only).
+  CD on push to `main`.
 - **Salesforce:** `demo-org` (00DjV000007iKJxUAM, API 68.0), My Domain https://orgfarm-e8c2b27448-dev-ed.develop.my.salesforce.com.
-  Licences: Salesforce Integration 1/1 used (hospital); **Salesforce Platform 0/6 used** (clinic user goes here; needs API Enabled).
+  Admin time zone Europe/London; admin has `Clinic_Demo_Admin`.
+  Clinic integration user `mcp-clinic@orgfarm-e8c2b27448.demo` (Salesforce licence, Minimum Access - Salesforce profile,
+  Europe/London) with `Clinic_Demo_Integration`. External Client App **MCP Clinic Booking** (Client Credentials,
+  Run As the clinic user). Local `.env` holds its credentials (gitignored, chmod 600).
+- **MCP key:** shared with the hospital MCP (`mcp-api-key`). One leaked key opens both services; rotating it means
+  redeploying both Cloud Run services. Use separate keys in production.
 - **Hospital baseline:** `docs/hospital-baseline.txt` (Account 1, Doctor 2, Condition 3, Treatment 4, Patient 3, Visit 3,
   Lab_Result 7, Patient_Treatment 4, Case 1).
+
+## Commands
+```bash
+sf project deploy start --metadata-dir salesforce/metadata --target-org demo-org --dry-run --wait 10
+sf project deploy start --metadata-dir salesforce/metadata --target-org demo-org --wait 10
+sf apex run --file salesforce/scripts/reset.apex --target-org demo-org | grep -E "Executed|CLINIC RESET|EXCEPTION|Error"
+sf apex run --file salesforce/scripts/double-booking-test.apex --target-org demo-org | grep -E "Executed|TEST|EXCEPTION|Error"
+for o in Clinic_Doctor__c Clinic_Leave__c Clinic_Patient__c Clinic_Appointment__c; do echo "== $o"; sf data query --query "SELECT COUNT() FROM $o" --target-org demo-org 2>/dev/null; done
+for o in Account Doctor__c Condition__c Treatment__c Patient__c Visit__c Lab_Result__c Patient_Treatment__c Case; do echo "== $o"; sf data query --query "SELECT COUNT() FROM $o" --target-org demo-org 2>/dev/null; done | diff docs/hospital-baseline.txt - && echo "HOSPITAL UNCHANGED"
+```
+Seeded counts after reset: Doctor 3, Leave 1, Patient 6, Appointment 12 (all Booked).
+Scripts: `reset.apex` (wipe + seed), `double-booking-test.apex` (guard test, rolls back),
+`create-integration-user.apex` (run once; safe to re-run).
 
 ## Working conventions
 - Bash commands, one per block, no `#` comments. Mac = zsh; Cloud Shell = bash; gcloud only in Cloud Shell.
@@ -118,21 +138,44 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 
 ## Gotchas
 - Folder and project names look like the hospital ones: check `pwd` before deleting.
-- Shell variables only live in the tab where they were set.
+- Shell variables only live in the tab where they were set, and a skipped line leaves them empty
+  (an empty `$DOC` gave `REQUIRED_FIELD_MISSING`). Use `&& echo $VAR` when setting them.
 - Hospital CHECKPOINT-5 gotchas still apply (metadata deploys, permission sets, plain hyphens, `/health`).
-
-## Current status
-- Milestone 0 captured. Architecture agreed. **Next: 1.1.**
-
-## Log
-- **2026-11-20:** Plan agreed; repo, Cloud Run service and clinic service account created; CD connected; phase 0 live;
-  hospital baseline recorded; licences checked. **Milestone 0 captured.** Architecture designed (4 `Clinic_*` objects,
-  computed availability, unique-key write safety, Apex reset); subtasks written.
-
-  - **Slot key format is a contract:** `<18-char Salesforce ID>|yyyy-MM-ddTHH:mmZ` (UTC, no seconds), e.g.
+- **Slot key format is a contract:** `<18-char Salesforce ID>|yyyy-MM-ddTHH:mmZ` (UTC, no seconds), e.g.
   `a0BjV00000ABCDeUAP|2026-11-23T09:00Z`. reset.apex and the MCP server must build it identically, or the
   double-booking guard silently stops working.
 - Anonymous Apex runs with the running user's object and field permissions: the admin needs `Clinic_Demo_Admin`.
 - Required fields can't be listed in permission sets (they're always accessible with object access).
 - Debug logs show `|` as `&#124;` (cosmetic). Read script results with `| grep`.
 - Seeded dates move with "today": re-run the reset on demo day, and before each dry run.
+- `DUPLICATE_VALUE` returns `fields: []` and names the clashing keys only in the message text (both keys when the same
+  patient repeats a booking). The server queries `Slot_Key__c` / `Patient_Slot_Key__c` instead of parsing the message.
+- Upsert by `Patient_Key__c` returns the record `id` on both 201 (created) and 200 (updated, `created: false`).
+  URL-encode the key: `+` → `%2B`, `|` → `%7C`.
+- Appointment auto-numbers keep counting across resets and tests (A-0064 and up). Harmless.
+- The clinic integration user can't delete (by design); test records are cleaned by the reset script.
+- Isolation holds both ways: the clinic user sees hospital objects as `INVALID_TYPE`; the hospital MCP's
+  `list_objects` shows no `Clinic_*`.
+
+## Current status
+- **Milestones 0, 1 and 2 captured.** Clinic metadata deployed; reset re-runnable; double-booking guard proven in Apex
+  and over REST; clinic user can read doctors, upsert patients, book and cancel; no access to hospital data.
+- Seed as of reset on Fri 20 Nov 2026: Dr Patel nearly full Mon 23 Nov (free 11:30, 12:00, 12:30);
+  Priya Shah booked Tue 24 Nov 10:30 with Dr Wilson; Dr Wilson on leave Thu 26 Nov.
+- **Next: 3.1**, server dependencies and the Salesforce client.
+
+## Log
+- **2026-11-20 (afternoon):** Plan agreed; repo, Cloud Run service and clinic service account created; CD connected;
+  phase 0 live; hospital baseline recorded; licences checked. **Milestone 0 captured.** Architecture designed
+  (4 `Clinic_*` objects, computed availability, unique-key write safety, Apex reset); subtasks written.
+- **2026-11-20 (evening):** Architecture committed. Admin time zone set to Europe/London. 4 `Clinic_*` objects,
+  4 tabs, permission sets `Clinic_Demo_Admin` (assigned) and `Clinic_Demo_Integration` deployed (32 components,
+  all Created). `reset.apex` seeds 3 doctors, 1 leave day, 6 patients, 12 bookings relative to today; ran twice
+  with identical counts. `double-booking-test.apex`: duplicate blocked with DUPLICATE_VALUE, slot freed after cancel,
+  rolled back. Hospital counts unchanged. **Milestone 1 captured.**
+- **2026-11-20 (night):** Clinic integration user created by Apex script (Salesforce licence, Minimum Access - Salesforce
+  profile) with `Clinic_Demo_Integration`. External Client App "MCP Clinic Booking" with Client Credentials; token 200 as
+  `mcp-clinic`. As the clinic user via REST: doctors readable; `Patient__c` → INVALID_TYPE; patient upsert 201 then 200;
+  booking 201; duplicate → DUPLICATE_VALUE; cancel 204 with keys blanked. Hospital MCP `list_objects` unchanged.
+  Decided to share `mcp-api-key` with the hospital MCP; clinic service account granted access. Local `.env` created.
+  **Milestone 2 captured.**
