@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Clinic booking demo: GP at Kingsway Medical Centre. Synthetic data.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <fields>
+        <fullName>Working_Days__c</fullName>
+        <description>Weekdays this doctor works. Hours are clinic-wide and set in the MCP server.</description>
+        <label>Working Days</label>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Mon</fullName>
+                    <default>false</default>
+                    <label>Mon</label>
+                </value>
+                <value>
+                    <fullName>Tue</fullName>
+                    <default>false</default>
+                    <label>Tue</label>
+                </value>
+                <value>
+                    <fullName>Wed</fullName>
+                    <default>false</default>
+                    <label>Wed</label>
+                </value>
+                <value>
+                    <fullName>Thu</fullName>
+                    <default>false</default>
+                    <label>Thu</label>
+                </value>
+                <value>
+                    <fullName>Fri</fullName>
+                    <default>false</default>
+                    <label>Fri</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <label>Clinic Doctor</label>
+    <nameField>
+        <label>Doctor Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Clinic Doctors</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>
