@@ -42,7 +42,7 @@ UK clinic, with Salesforce as the data store. A teammate connects it to the voic
 - [x] 1.1 ARCHITECTURE.md committed
 - [x] 1.2 Admin user time zone set to Europe/London
 - [x] 1.3 Metadata: `Clinic_Doctor__c` and `Clinic_Leave__c`
-- [ ] 1.4 Metadata: `Clinic_Patient__c` and `Clinic_Appointment__c` (unique keys)
+- [x] 1.4 Metadata: `Clinic_Patient__c` and `Clinic_Appointment__c` (unique keys)
 - [ ] 1.5 Metadata: tabs, `Clinic_Demo_Admin` and `Clinic_Demo_Integration` permission sets, `package.xml`
 - [ ] 1.6 Dry-run, deploy, assign `Clinic_Demo_Admin` to the admin; hospital counts unchanged
 - [ ] 1.7 `reset.apex`: wipe `Clinic_*` and seed the demo story relative to today

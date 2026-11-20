@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Clinic booking demo: caller who booked an appointment. Synthetic data.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <fields>
+        <fullName>Date_of_Birth__c</fullName>
+        <label>Date of Birth</label>
+        <required>true</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Patient_Key__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>Normalised phone and date of birth, e.g. +447700900123|1988-04-12. Upsert key; written by the MCP server.</description>
+        <externalId>true</externalId>
+        <label>Patient Key</label>
+        <length>40</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Phone__c</fullName>
+        <description>Normalised UK number, e.g. +447700900123.</description>
+        <label>Phone</label>
+        <length>16</length>
+        <required>true</required>
+        <type>Text</type>
+    </fields>
+    <label>Clinic Patient</label>
+    <nameField>
+        <label>Patient Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Clinic Patients</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

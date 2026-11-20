@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Clinic booking demo: one 30-minute appointment. Slot keys make double booking impossible. Synthetic data.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <fields>
+        <fullName>Appointment_Type__c</fullName>
+        <label>Appointment Type</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Standard</fullName>
+                    <default>true</default>
+                    <label>Standard</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Doctor__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <label>Doctor</label>
+        <referenceTo>Clinic_Doctor__c</referenceTo>
+        <relationshipLabel>Appointments</relationshipLabel>
+        <relationshipName>Appointments</relationshipName>
+        <required>true</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>End_Time__c</fullName>
+        <label>End Time</label>
+        <required>true</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Patient_Slot_Key__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>patientId|startUTC while Booked; blank when Cancelled. Stops one patient being booked twice at the same time.</description>
+        <externalId>false</externalId>
+        <label>Patient Slot Key</label>
+        <length>60</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Patient__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <label>Patient</label>
+        <referenceTo>Clinic_Patient__c</referenceTo>
+        <relationshipLabel>Appointments</relationshipLabel>
+        <relationshipName>Appointments</relationshipName>
+        <required>true</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Previous_Start_Time__c</fullName>
+        <label>Previous Start Time</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Reason__c</fullName>
+        <label>Reason</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Slot_Key__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>doctorId|startUTC while Booked; blank when Cancelled. Unique, so a slot can only be booked once.</description>
+        <externalId>false</externalId>
+        <label>Slot Key</label>
+        <length>60</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Start_Time__c</fullName>
+        <label>Start Time</label>
+        <required>true</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Booked</fullName>
+                    <default>true</default>
+                    <label>Booked</label>
+                </value>
+                <value>
+                    <fullName>Cancelled</fullName>
+                    <default>false</default>
+                    <label>Cancelled</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Clinic Appointment</label>
+    <nameField>
+        <displayFormat>A-{0000}</displayFormat>
+        <label>Appointment Reference</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Clinic Appointments</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Booked_Must_Hold_Slot_Keys</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL(Status__c, "Booked"), OR(ISBLANK(Slot_Key__c), ISBLANK(Patient_Slot_Key__c)))</errorConditionFormula>
+        <errorMessage>A booked appointment must have both slot keys.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Cancelled_Must_Release_Slot_Keys</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL(Status__c, "Cancelled"), OR(NOT(ISBLANK(Slot_Key__c)), NOT(ISBLANK(Patient_Slot_Key__c))))</errorConditionFormula>
+        <errorMessage>A cancelled appointment must release its slot keys.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_After_Start</fullName>
+        <active>true</active>
+        <errorConditionFormula>End_Time__c &lt;= Start_Time__c</errorConditionFormula>
+        <errorMessage>End time must be after the start time.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>
